@@ -12,8 +12,8 @@ describe("Home", () => {
 			cy.visit("/", {
 				failOnStatusCode: false,
 			});
-			cy.contains('h2','Welcome DAIRA');
-		});	
+			cy.contains('h2', 'Welcome DAIRA');
+		});
 	});
 
 	it("[SUCCESS H-3] Get clubs", () => {
@@ -22,19 +22,51 @@ describe("Home", () => {
 				cy.visit("/", {
 					failOnStatusCode: false,
 				});
-				cy.get('[class="q-icon notranslate material-icons"]');
+				cy.get('.material-icons:contains("groups")')
 			});
 		});
 	});
+
+	it("[SUCCESS H-4] Add club", () => {
+		cy.login().then((token) => {
+			cy.getClubs(token).then((clubsBefore) => {
+				let initialClubCount = clubsBefore.length;
+
+				cy.visit("/", {
+					failOnStatusCode: false,
+				});
+
+				cy.get('.material-icons:contains("add")').click();
+				cy.get('input[aria-label="Club name"]').type("Club de prueba");
+				cy.get('input[aria-label="Club description"]').type("Descripcion de prueba");
+				cy.contains('button', 'Add Club').click();
+				// cy.get('button[span="Add Club"]').click(); // Asegúrate de cambiar esto al id correcto del botón de envío
+				cy.wait(1000);
+				cy.getClubs(token).then((clubsAfter) => {
+					const finalClubCount = clubsAfter.length;
+
+					expect(finalClubCount).to.eq(initialClubCount + 1);
+				});
+			});
+			
+		});
+	});
+
+	it("[ERROR H-5] Fail to add club for missing cub name", () => {
+		cy.login().then((token) => {
+			cy.visit("/", {
+				failOnStatusCode: false,
+			});
+
+			cy.get('.material-icons:contains("add")').click();
+			cy.get('input[aria-label="Club description"]').type("Descripcion de prueba");
+			cy.contains('button', 'Add Club').click();
+			// cy.get('button[span="Add Club"]').click(); // Asegúrate de cambiar esto al id correcto del botón de envío
+			cy.contains('p', 'name is required').contains("name is required");
+
+		});
+	});
+
+
 });
-// it("[SUCCESS C-1] club details", () => {
-// 	cy.login().then((token) => {
-// 		cy.getClubs(token).then((clubes) => {
-// 			cy.visit("/", {
-// 				failOnStatusCode: false,
-// 			});
-// 			cy.get(`div[id=${clubes[0]._id}]`).click();
-// 			cy.get('span[class="text-h3"]').contains(clubes[0].name);
-// 		});
-// 	});
-// });
+
