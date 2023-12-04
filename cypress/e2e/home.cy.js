@@ -19,13 +19,11 @@ describe("Home", () => {
 	it("[SUCCESS H-3] Get clubs", () => {
 		cy.login().then((token) => {
 		  cy.getClubs(token).then((clubs) => {
-
 			expect(clubs).to.not.be.empty;
 	  
 			cy.visit("/", {
 			  failOnStatusCode: false,
 			});
-			// The number of clubs should be the same as the number of icons
 			cy.get('.material-icons:contains("groups")').should('have.length', clubs.length);
 
 		  });
@@ -37,7 +35,6 @@ describe("Home", () => {
 		cy.login().then((token) => {
 			cy.getClubs(token).then((clubsBefore) => {
 				let initialClubCount = clubsBefore.length;
-
 				cy.visit("/", {
 					failOnStatusCode: false,
 				});
@@ -46,15 +43,12 @@ describe("Home", () => {
 				cy.get('input[aria-label="Club name"]').type("Club de prueba");
 				cy.get('input[aria-label="Club description"]').type("Descripcion de prueba");
 				cy.contains('button', 'Add Club').click();
-				// cy.get('button[span="Add Club"]').click(); // Asegúrate de cambiar esto al id correcto del botón de envío
 				cy.wait(1000);
 				cy.getClubs(token).then((clubsAfter) => {
 					const finalClubCount = clubsAfter.length;
-
 					expect(finalClubCount).to.eq(initialClubCount + 1);
 				});
 			});
-			
 		});
 	});
 
@@ -67,12 +61,9 @@ describe("Home", () => {
 			cy.get('.material-icons:contains("add")').click();
 			cy.get('input[aria-label="Club description"]').type("Descripcion de prueba");
 			cy.contains('button', 'Add Club').click();
-			// cy.get('button[span="Add Club"]').click(); // Asegúrate de cambiar esto al id correcto del botón de envío
 			cy.contains('p', 'name is required').contains("name is required");
-
 		});
 	});
-
 
 });
 

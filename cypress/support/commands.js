@@ -59,3 +59,32 @@ Cypress.Commands.add("getClubs", (token) => {
 		return body.clubs;
 	});
 });
+
+/**
+ * Send request to clubs endpoint without token and return the user clubs
+ */
+
+Cypress.Commands.add("getClubsNotToken", () => {
+	cy.request({
+		url: `http://3.138.52.135:3000/clubs`,
+		failOnStatusCode: false,
+		headers: {},
+	}).then(({ body }) => {
+		return body;
+	});
+});
+
+/**
+ * Send request to members endpoint with the input token and return the club members
+ */
+
+Cypress.Commands.add("getMembers", (token, idClub) => {
+	cy.request({
+		url: `http://3.138.52.135:3000/clubs/${idClub}/members`,
+		headers: {
+			Authorization: `Bearer ${token}`,
+		},
+	}).then(({ body }) => {
+		return body.members;
+	});
+});
