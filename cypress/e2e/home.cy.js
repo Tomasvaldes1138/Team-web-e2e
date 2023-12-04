@@ -18,14 +18,20 @@ describe("Home", () => {
 
 	it("[SUCCESS H-3] Get clubs", () => {
 		cy.login().then((token) => {
-			cy.getClubs(token).then((clubs) => {
-				cy.visit("/", {
-					failOnStatusCode: false,
-				});
-				cy.get('.material-icons:contains("groups")')
+		  cy.getClubs(token).then((clubs) => {
+
+			expect(clubs).to.not.be.empty;
+	  
+			cy.visit("/", {
+			  failOnStatusCode: false,
 			});
+			// The number of clubs should be the same as the number of icons
+			cy.get('.material-icons:contains("groups")').should('have.length', clubs.length);
+
+		  });
 		});
-	});
+	  });
+	  
 
 	it("[SUCCESS H-4] Add club", () => {
 		cy.login().then((token) => {
